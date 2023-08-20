@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rangkuman tutorial vue js</title>
+</head>
+
+<body>
+    <div id="app">
+        <!-- <div v-text="message"></div>
+        <div v-html="contohMessage"></div> -->
+        <!-- <div v-if="nilai == 'A'">
+            nilai siswa ini adalah a
+        </div>
+        <!-- BESAR KECIL SENSITIF -->
+        <!-- <div v-else-if="nilai == 'B'">
+            nilai siswa ini adalah b
+        </div>
+        <div v-else>
+            nilai siswa ini adalah c
+        </div> -->
+        <!-- <ol>
+            <li v-for="i in fruits">
+                {{i}}
+            </li>
+        </ol> -->
+        <!-- <div @click="sayHi">
+            click me
+        </div> -->
+        <!-- <a :href="url">link</a> -->
+        <!-- <input type="text" v-model="message"><br>
+        isi dari message adalah {{message}} -->
+        <!-- <li v-for="i in books">
+            {{i}}
+        </li>
+        <div> total buku sebanyak {{booksTotal}}</div>
+        <button @click="decrease"> kurangi buku</button> -->
+        <input type="text" v-model="password">
+        <input type="text" v-model="retrypassword">
+        <div>
+            {{keterangan}}
+        </div>
+    </div>
+
+    <script type="module">
+        import { createApp } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+
+        createApp({
+            data() {
+                return {
+                    // message: "kamal",
+                    // contohMessage: "<strong>hello</strong>"
+                    //====================================
+                    // nilai: 'A'
+                    //=======================
+                    //data dari databest
+                    // fruits: ['mango', 'apple', 'semamngka', 'kiwi']
+                    //==========================
+                    // url: "http://google.com"
+                    //=============================
+                    // message: "hallo dunia"
+                    //===========================
+                    // books: [
+                    //     "buku 1",
+                    //     "buku 2",
+                    //     "buku 3",
+                    //     "buku 4"
+                    // ]
+                    password: "",
+                    retrypassword: "",
+                    keterangan: ""
+                }
+            }, methods: {
+                // sayHi() {
+                //     alert("hallo selamat beljar")
+                //======================
+                // decrease() {
+                //     this.books.splice(0, 1)
+                // }
+                //===========================
+
+                // }
+            }, computed: {
+                // booksTotal() {
+                //     return this.books.length
+                // }
+            }, watch: {
+                retrypassword() {
+                    if (this.password != this.retrypassword) {
+                        this.keterangan = "password tidak cocok"
+                    } else {
+                        this.keterangan = ""
+                    }
+                }
+            }
+        }).mount("#app")
+    </script>
+</body>
+
+</html>

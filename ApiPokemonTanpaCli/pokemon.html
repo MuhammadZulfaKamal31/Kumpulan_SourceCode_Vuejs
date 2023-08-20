@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<style>
+    .card {
+        background: rgba(255, 255, 255, 0.21);
+        border-radius: 10px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(9px);
+        border-left: 2px solid rgba(255, 255, 255, 0.58);
+        border-top: 2px solid rgba(255, 255, 255, 0.58);
+    }
+
+    .suggested_pokemon {
+        cursor: pointer;
+    }
+</style>
+
+<body>
+    <div id="app">
+        <div class="container-fluid bg-dark bg-gradient">
+            <div class=" container bg-dark " style=" min-height:100vh;">
+                <div class=" row justify-content-center">
+                    <div class=" col-5 ">
+                        <img src="img/download.png" alt="" style="width: 100%;">
+                    </div>
+                    <div class=" row justify-content-center">
+                        <div class=" col-5">
+                            <input type="text" class=" form-control mt-5" placeholder="search pokemon" v-model="search">
+                            <div class="text-white">
+                                <label for="">Sugestion:
+                                    <span class="suggested_pokemon" v-for=" i in suggestedPokemon"
+                                        @click="viewDetilPokemon(i.name)">{{i.name}} | </span>
+                            </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class=" main mt-5 pt-5 text-white">
+                        <div class=" view-all text-white" v-if="!viewedAsDetail">
+                            <div class="row px-5">
+                                <!-- looping card -->
+                                <div class=" col-12 col-md-5 col-lg-3 mb-3" v-for="item in pokemonList"
+                                    @click=" viewDetilPokemon(item.name)">
+                                    <div class="card text-center text-white">
+                                        <img :src="item.sprites.front_default" alt="">
+                                        <label for="">{{item.name}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" view-details text-white" v-else>
+                            <div class=" md-5">
+                                <button @click="viewedAsDetail=false">vew all </button>
+                                <div class="row">
+                                    <div class=" col-12 col-md-6">
+                                        <div class="card">
+                                            <img :src="selectedPokemon.sprites.front_default" alt="">
+                                        </div>
+                                    </div>
+                                    <div class=" col-8 col-md-5">
+                                        <h2>{{selectedPokemon.name}} </h2>
+                                        <p>
+                                            <label for="">type </label>
+                                            <span v-for="i in selectedPokemon.types"> {{i.type.name}} | </span>
+                                        </p>
+                                        <p>
+                                            <label for="">Skill</label>
+                                            <br>
+                                            <span v-for="i in selectedPokemon.moves">{{i.move.name}}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createApp } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+        createApp({
+            data() {
+                return {
+                    pokemonList: [],
+                    viewedAsDetail: false,
+                    selectedPokemon: "",
+                    //template search
+                    search: "",
+                    getGen1Pokemon: [],
+                    //buat na,pilin seacrh
+                    suggestedPokemon: ''
+
+                }
+            }, methods: {
+                async getListPokemon() {
+                    let response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=20");
+                    let data = await response.json();
+                    let result = data.results;
+                    //untuk dapetin data satu persatu
+                    // result.forEach(function (result) {
+                    //     this.getEachPokemon(result)
+                    // })
+                    result.forEach(item => {
+                        this.getEachPokemon(item)
+                    })
+                },
+                async getEachPokemon(result) {
+                    let response = await fetch("https://pokeapi.co/api/v2/pokemon/" + result.name)
+                    let data = await response.json();
+                    this.pokemonList.push(data);
+                    this.pokemonList.sort((a, b) => a.id - b.id)
+                },
+                async viewDetilPokemon(pokemon) {
+                    //aurnya di sini dulu karena ini di klik pertama
+                    this.viewedAsDetail = true
+                    let response = await fetch("https://pokeapi.co/api/v2/pokemon/" + pokemon)
+                    let data = await response.json();
+                    console.log(pokemon);
+                    // mengoper data untuk bagian detail
+                    this.selectedPokemon = data
+                },
+                async getGenPokemon() {
+                    let response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151")
+                    let data = await response.json();
+                    let result = data.results
+                    //ambil dari template data
+                    this.getGen1Pokemon = result;
+                    console.log(this.getGen1Pokemon)
+                }
+
+            }, watch: {
+                search() {
+                    let filteredPokemon = this.getGen1Pokemon.filter(item => {
+                        return item.name.includes(this.search)
+                    })
+                    //memasang method pokemon
+                    this.suggestedPokemon = filteredPokemon.slice(0, 3)
+                }
+            },
+            mounted() {
+                this.getListPokemon();
+                this.getGenPokemon();
+            },
+        }).mount("#app")
+    </script>
+</body>
+
+</html>
